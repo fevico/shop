@@ -8,7 +8,7 @@ import {
   Skeleton,
 } from "@chakra-ui/react";
 import { BiExpand } from "react-icons/bi";
-import React from "react";
+import React, {useState} from "react";
 import {
   addToFavorites,
   removeFromFavorites,
@@ -16,10 +16,12 @@ import {
 } from "../redux/actions/productActions";
 import { useSelector, useDispatch } from "react-redux";
 import { MdOutlineFavorite, MdOutlineFavoriteBorder } from "react-icons/md";
+import {Link as ReactLink} from 'react-router-dom';
 
 const ProductCard = ({ product, loading }) => {
   const dispatch = useDispatch();
 	const { favourite } = useSelector((state) => state.product);
+  const [isShown, setIsShown] = useState(false);
 
   return (
     <Skeleton isLoaded={!loading} _hover={{ size: 1.5 }}>
@@ -31,7 +33,9 @@ const ProductCard = ({ product, loading }) => {
         shadow="md"
       >
         <Image
-          src={product.images[0]}
+          onMouseEnter={()=>setIsShown(true)}
+          onMouseLeave={()=>setIsShown(false)}
+          src={product.images[isShown && product.images.length == 2 ? 1 : 0]}
           fallback="https://via.placeholder.com/150"
           alt={product.name}
           height="200px"
@@ -80,6 +84,7 @@ const ProductCard = ({ product, loading }) => {
           )}
           <IconButton
             icon={<BiExpand size="20" />}
+            as={ReactLink} to={`/product/${product._id}`}
             colorScheme="cyan"
             size="sm"
           />

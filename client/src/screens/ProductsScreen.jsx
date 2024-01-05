@@ -1,4 +1,14 @@
-import { Box, Button, Wrap, WrapItem, Center } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Wrap,
+  WrapItem,
+  Center,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+} from "@chakra-ui/react";
 import ProductCard from "../components/ProductCard";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,15 +17,21 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 
 const ProductsScreen = () => {
   const dispatch = useDispatch();
-	const { loading, error, products, pagination, favouriteToggled } = useSelector((state) => state.product);
+  const {
+    loading,
+    error,
+    products,
+    pagination,
+    favouriteToggled,
+  } = useSelector((state) => state.product);
 
   useEffect(() => {
-		dispatch(getProducts(1));
-	}, [dispatch]);
+    dispatch(getProducts(1));
+  }, [dispatch]);
 
-	const paginationButtonClick = (page) => {
-		dispatch(getProducts(page));
-	};
+  const paginationButtonClick = (page) => {
+    dispatch(getProducts(page));
+  };
 
   return (
     <>
@@ -27,13 +43,21 @@ const ProductsScreen = () => {
             minHeight="80vh"
             mx={{ base: "12", md: "20", lg: "32" }}
           >
-            {products.map((product) => (
-              <WrapItem key={product._id}>
-                <Center w="250px" h="450px">
-                  <ProductCard product={product} loading={loading} />
-                </Center>
-              </WrapItem>
-            ))}
+            {error ? (
+							<Alert status='error'>
+								<AlertIcon />
+								<AlertTitle>We are sorry!</AlertTitle>
+								<AlertDescription>{error}</AlertDescription>
+							</Alert>
+						) : (
+                products.map((product) => (
+                <WrapItem key={product._id}>
+                  <Center w="250px" h="450px">
+                    <ProductCard product={product} loading={loading} />
+                  </Center>
+                </WrapItem>
+              ))
+            )}
           </Wrap>
           {!favouriteToggled && (
             <Wrap spacing="10px" justify="center" p="5">
@@ -43,12 +67,19 @@ const ProductsScreen = () => {
               >
                 <ArrowLeftIcon />
               </Button>
-                {Array.from(Array(pagination.totalPages), (e, i) =>{
-                  return (
-                    <Button colorScheme={pagination.currentPage === i + 1 ? 'cyan' : 'gray'} key={1}
-                    onClick={()=> paginationButtonClick(i + 1)}>{i + 1}</Button>
-                  )
-                })}
+              {Array.from(Array(pagination.totalPages), (e, i) => {
+                return (
+                  <Button
+                    colorScheme={
+                      pagination.currentPage === i + 1 ? "cyan" : "gray"
+                    }
+                    key={1}
+                    onClick={() => paginationButtonClick(i + 1)}
+                  >
+                    {i + 1}
+                  </Button>
+                );
+              })}
               <Button
                 colorScheme="cyan"
                 onClick={() => paginationButtonClick(pagination.totalPages)}
