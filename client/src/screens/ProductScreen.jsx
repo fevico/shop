@@ -16,6 +16,7 @@ import {
   Stack,
   Text,
   Wrap,
+  useToast
 } from "@chakra-ui/react";
 import { BiCheckShield, BiPackage, BiSupport } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,12 +24,16 @@ import { useParams } from "react-router-dom";
 import { getProduct } from "../redux/actions/productActions";
 import { useEffect, useState } from "react";
 import Start from "../components/Start";
+import { addCartItem } from '../redux/actions/cartActions';
 
 const ProductScreen = () => {
   const [amount, setAmount] = useState(1);
   const { id } = useParams();
   const dispatch = useDispatch();
+  const { cartItems } = useSelector((state) => state.cart);
   const { loading, error, product } = useSelector((state) => state.product);
+  const toast = useToast();
+
 
   useEffect(() => {
     dispatch(getProduct(id));
@@ -42,6 +47,20 @@ const ProductScreen = () => {
       setAmount(amount - 1);
     }
   };
+
+  const addItem = () => {
+		if (cartItems.some((cartItem) => cartItem.id === id)) {
+			cartItems.find((cartItem) => cartItem.id === id);
+			dispatch(addCartItem(id, amount));
+		} else {
+			dispatch(addCartItem(id, amount));
+		}
+		toast({
+			description: 'Item has been added.',
+			status: 'success',
+			isClosable: true,
+		});
+	};
 
   return (
     <Wrap spacing="30px" justify="center" minH="100vh">
@@ -125,12 +144,71 @@ const ProductScreen = () => {
                     <Button isDisabled={amount >= product.stock} onClick={()=>changeAmmount('plus')}><SmallAddIcon/></Button>
                   </Flex>
                   <Badge fontSize='lg' width='170px' textAlign='center' colorScheme="gray">In Stock: {product.stock} </Badge>
-									<Button variant='outline' isDisabled={product.stock === 0} colorScheme='cyan' onClick={() => {}}>
+									<Button variant='outline' isDisabled={product.stock === 0} colorScheme='cyan' onClick={() => addItem()}>
 										Add to cart
 									</Button>
-                  </Stack>
-              </Stack>
-            </Stack>
+                  <Stack width='270px'>
+										<Flex alignItems='center'>
+											<BiPackage size='20px' />
+                      <Text fontWeight='medium' fontSize='sm' ml='2'>
+												shipped in 3 - 5 days
+											</Text>
+                      </Flex>
+										<Flex alignItems='center'>
+											<BiCheckShield size='20px' />
+											<Text fontWeight='medium' fontSize='sm' ml='2'>
+												2 year extended warranty
+											</Text>
+										</Flex>
+										<Flex alignItems='center'>
+											<BiSupport size='20px' />
+											<Text fontWeight='medium' fontSize='sm' ml='2'>
+												We're here for you 24/7
+											</Text>
+										</Flex>
+									</Stack>
+								</Stack>
+							</Stack>
+							<Flex direction='column' align='center' flex='1' _dark={{ bg: 'gray.900' }}>
+								<Image
+									mb='30px'
+									src={product.images[0]}
+									alt={product.name}
+									fallbackSrc='https://via.placeholder.com/250'
+								/>
+								<Image
+									mb='30px'
+									src={product.images[1]}
+									alt={product.name}
+									fallbackSrc='https://via.placeholder.com/250'
+								/>
+							</Flex>
+						</Stack>
+						<Stack>
+							<Text fontSize='xl' fontWeight='bold'>
+								Reviews
+							</Text>
+							<SimpleGrid minChildWidth='300px' spacingX='40px' spacingY='20px'>
+								{product.reviews.map((review) => (
+									<Box key={review._id}>
+										<Flex spcaing='2px' alignItems='center'>
+											<Start color='cyan.500' />
+											<Start rating={product.rating} star={2} />
+											<Start rating={product.rating} star={3} />
+											<Start rating={product.rating} star={4} />
+											<Start rating={product.rating} star={5} />
+											<Text fontWeight='semibold' ml='4px'>
+												{review.title && review.title}
+											</Text>
+										</Flex>
+										<Box py='12px'>{review.comment}</Box>
+										<Text fontSize='sm' color='gray.400'>
+											by {review.name}, {new Date(review.createdAt).toDateString()}
+										</Text>
+									</Box>
+								))}
+							</SimpleGrid>
+						</Stack>
           </Box>
         )
       )}
