@@ -9,18 +9,33 @@ import {
   Text,
   useColorModeValue as mode,
   useDisclosure,
+  AlertDescription,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  Divider,
+  Image,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
+  Spacer,
+  useToast
 } from "@chakra-ui/react";
-import { MdOutlineFavorite, MdOutlineFavoriteBorder } from "react-icons/md";
+import { MdOutlineFavorite, MdOutlineFavoriteBorder, MdSportsTennis } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFavorites } from "../redux/actions/productActions";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BsPhoneFlip } from "react-icons/bs";
 import { Link as ReactLink } from "react-router-dom";
 import NavLink from "./NavLink";
 import ColorModeToggle from "./ColorModeToggle";
-import { BiUserCheck } from "react-icons/bi";
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import { BiUserCheck, BiLogInCircle } from "react-icons/bi";
+import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { TbShoppingCart } from "react-icons/tb";
+import {logout} from '../redux/actions/userActions';
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
 
 const links = [
   { name: "Products", route: "/products" },
@@ -34,8 +49,20 @@ const Header = () => {
   const dispatch = useDispatch();
   const { favouriteToggled } = useSelector((state) => state.product);
   const { cartItems } = useSelector((state) => state.cart);
+  const {userInfo} = useSelector((state)=>state.user);
+  const toast = useToast();
+  
 
   useEffect(() => {}, { favouriteToggled, dispatch });
+
+  const logoutHandler = ()=>{
+    dispatch(logout());
+    toast({
+      description: 'You have been logged out',
+      status: 'success',
+      isClosable: 'true'
+    })
+  }
   return (
     <Box bg={mode("cyan.300", "grey.900")} px="4">
       <Flex h="16" alignItems="center" justifyContent="space-between">
@@ -121,7 +148,42 @@ const Header = () => {
           </HStack>
         </HStack>
         <Flex alignItems="center">
-          <BiUserCheck />
+          {userInfo ? (
+            <Menu>
+              <MenuButton rounded='full' variant='link' cursor='pointer' minW='0'>
+                <HStack>
+                  <BiUserCheck size='30'/>
+                  <ChevronDownIcon/>
+                </HStack>
+              </MenuButton>
+              <MenuList>
+                <HStack>
+                  <Text pl='3' as='i'>{userInfo.email}</Text>
+                </HStack>
+                <Divider py='1' />
+                <MenuItem as={ReactLink} to='/order-history'>Order History</MenuItem>
+                <MenuItem as={ReactLink} to='/profile'>Profile</MenuItem>
+                {userInfo.isAdmin && (
+                  <>
+                  <MenuDivider/>
+                  <MenuItem as={ReactLink} to='/admin-console'>Admin Console</MenuItem>
+                  </>
+                )}
+                <MenuDivider />
+                <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+              </MenuList>
+            </Menu>
+          ) : 
+          (
+            <Menu>
+              <MenuButton as={IconButton} variant='ghost' cursor='pointer' icon={<BiLogInCircle size='25px' />}/>
+              <MenuList>
+                <MenuItem as={ReactLink} to='/login' p='2' fontWeight='400' variant='link'>Sign in</MenuItem>
+                <MenuDivider/>
+                <MenuItem as={ReactLink} to='/registration' p='2' fontWeight='400' variant='link'>Sign up</MenuItem>
+              </MenuList>
+            </Menu>
+          )}
         </Flex>
       </Flex>
       <Box display="flex">

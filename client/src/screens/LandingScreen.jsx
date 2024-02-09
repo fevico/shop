@@ -42,7 +42,7 @@ const LandingScreen = () => (
                 Pen Store
               </Text>
             </Flex>
-            <Heading size="xl" fontweight="normal">
+            <Heading size="xl" fontWeight="normal">
               Refresh your equipment
             </Heading>
           </Stack>
