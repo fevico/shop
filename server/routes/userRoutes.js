@@ -3,6 +3,7 @@ import User from "../models/User.js";
 import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import { sendVerificationEmail } from "../middleware/sendVerificationEmail.js";
+import { passwordResetEmail } from "../middleware/passwordResetEmail.js";
 
 const userRoutes = express.Router();
 
@@ -97,11 +98,11 @@ const verifyEmail = asyncHandler(async(req, res) => {
 const passwordResetRequest = asyncHandler(async(req, res)=>{
     const {email} = req.body;
     try {
-        const user = await User.findOne({email});
+        const user = await User.findOne({email: email});
         if(user){
             const newToken = genToken(user._id);
             passwordResetEmail(newToken, user.email, user.name);
-            res.status(200).send(`we have send a recovery emil to ${email}`)
+            res.status(200).send(`we have send a recovery email to ${email}`)
         }
     } catch (error) {
         res.status(401).send('there is no account with this email address!')

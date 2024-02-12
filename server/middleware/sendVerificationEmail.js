@@ -25,7 +25,7 @@ export const sendVerificationEmail = (token, email, name) => {
     const mailOptions = {
         from: 'penstore@gmail.com',
         to: email,
-        subject: 'Verification email',
+        subject: 'Verify your email',
         html: html
     }
 
