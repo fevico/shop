@@ -90,8 +90,9 @@ export const sendResendEmail = (email) => async (dispatch) =>{
     try {
         const config = {headers: {'Content-Type': 'application/json'}};
 
-        const {data} = await axios.post(`/api/users/password-reset-request`, {email}, config)
-        dispatch(setServerResponseMsg(data));
+        const {data, status} = await axios.post(`/api/users/password-rest-request`, {email}, config)
+		dispatch(setServerResponseMsg(data));
+		dispatch(setServerResponseStatus(status));
 
     } catch (error) {
         dispatch(
@@ -113,7 +114,7 @@ export const resetPassword = (password, token) => async (dispatch) =>{
 
         const {data, status} = await axios.post(`/api/users/password-reset`, {password}, config)
         dispatch(setServerResponseMsg(data, status))
-        dispatch(setServerResponseStatus(status));
+        dispatch(setServerResponseStatus(status)); 
 
     } catch (error) {
         dispatch(

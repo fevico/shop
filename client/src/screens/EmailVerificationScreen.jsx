@@ -43,7 +43,7 @@ function EmailVerificationScreen() {
             <AlertIcon boxSize="16" size="xl" />
             <AlertTitle>Thanks for verifying your email.</AlertTitle>
             <AlertDescription fontSize="xl">
-              You can continue shopping now! 
+              You can close this window now.
             </AlertDescription>
           </Alert>
         ) : (
@@ -62,18 +62,7 @@ function EmailVerificationScreen() {
             </AlertDescription>
           </Alert>
         )} 
-        {!loading && (
-          <Button
-            colorScheme="cyan"
-            as={ReactLink}
-            to="/login"
-            p="2"
-            size="lg"
-            minW="300px"
-          >
-            Sign back in
-          </Button>
-        )}
+        
       </AbsoluteCenter>
     </Box>
   );

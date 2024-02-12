@@ -51,9 +51,14 @@ const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const {userInfo} = useSelector((state)=>state.user);
   const toast = useToast();
+  const [showBanner, setShowBanner] = useState(userInfo ? !userInfo.active : false);
   
 
-  useEffect(() => {}, { favouriteToggled, dispatch });
+  useEffect(() => {
+    if(userInfo && !userInfo.active){
+      setShowBanner(true);
+    }
+  }, [favouriteToggled, dispatch, userInfo ]);
 
   const logoutHandler = ()=>{
     dispatch(logout());
@@ -64,6 +69,7 @@ const Header = () => {
     })
   }
   return (
+    <>
     <Box bg={mode("cyan.300", "grey.900")} px="4">
       <Flex h="16" alignItems="center" justifyContent="space-between">
         <Flex display={{ base: "flex", md: "none" }} alignItems="center">
@@ -214,6 +220,19 @@ const Header = () => {
         )}
       </Box>
     </Box>
+    {userInfo && !userInfo.active && showBanner && (
+      <Box>
+        <Alert status="warning">
+          <AlertIcon/>
+          <AlertTitle>Email not verified!</AlertTitle>
+          <AlertDescription>You must verify your email address.</AlertDescription>
+          <Spacer/>
+          <CloseIcon cursor={'pointer'} onClick={()=>setShowBanner(false)}/>
+        </Alert>
+      </Box>
+    )}
+    </>
+    
   );
 };
 

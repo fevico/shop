@@ -8,14 +8,14 @@ import CartSreen from './screens/CartSreen';
 import LoginScreen from './screens/LoginScreen';
 import Footer from './components/Footer';
 import EmailVerificationScreen from './screens/EmailVerificationScreen';
+import PaswordResetScreen from './screens/PaswordResetScreen';
 
 
 function App() {
   return (
     
   <ChakraProvider>
-    <Router>
-     
+    <Router>   
 				<Header />
 				<main>
 					<Routes>
@@ -25,6 +25,7 @@ function App() {
 						<Route path='/cart' element={<CartSreen />} />
 						<Route path='/login' element={<LoginScreen />} />
 						<Route path='/email-verify/:token' element={<EmailVerificationScreen />} />
+						<Route path='/password-reset/:token' element={<PaswordResetScreen />} />
 
 					</Routes>
 				</main>
