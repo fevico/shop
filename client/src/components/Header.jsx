@@ -236,7 +236,7 @@ const Header = () => {
           <Spacer/>
           <CloseIcon cursor={'pointer'} onClick={()=>setShowBanner(false)}/>
         </Alert>
-      </Box>
+      </Box> 
     )}
     </>
     

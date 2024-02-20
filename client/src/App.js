@@ -13,28 +13,25 @@ import axios from 'axios';
 import { VStack, Spinner } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import {GoogleOAuthProvider} from '@react-oauth/google'
+import RegistrationScreen from './screens/RegisrationScreen';
 
 
 function App() {
 	const [googleClient, setGoogleClient] = useState(null);
-	useEffect(()=>{
-		const googleKey = async()=>{
-			const {data: googleId} = await axios.get('api/config/google');
+	useEffect(() => {
+		const googleKey = async () => {
+			const { data: googleId } = await axios.get('/api/config/google');
 			setGoogleClient(googleId);
 		};
 		googleKey();
-	}, [googleClient])
+	}, [googleClient]);
 
-  return !googleClient ? (<VStack pt='37v'>
- <Spinner
-            mt="20"
-            thickness="2px"
-            speed="0.65s"
-            emptyColor="gray.200"
-            color="cyan.500"
-            size="xl"
-          />  </VStack>) : (
-    <GoogleOAuthProvider clientId={googleClient}>
+	return !googleClient ? (
+		<VStack pt='37vh'>
+			<Spinner mt='20' thickness='2px' speed='0.65s' emptyColor='gray.200' color='cyan.500' size='xl' />
+		</VStack>
+	) : (
+		<GoogleOAuthProvider clientId={googleClient}>
   <ChakraProvider>
     <Router>   
 				<Header />
@@ -45,6 +42,7 @@ function App() {
 						<Route path='/product/:id' element={<ProductScreen />} />
 						<Route path='/cart' element={<CartSreen />} />
 						<Route path='/login' element={<LoginScreen />} />
+						<Route path='/registration' element={<RegistrationScreen />} />
 						<Route path='/email-verify/:token' element={<EmailVerificationScreen />} />
 						<Route path='/password-reset/:token' element={<PaswordResetScreen />} />
 					</Routes>

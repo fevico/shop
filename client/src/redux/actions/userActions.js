@@ -62,28 +62,8 @@ export const register = (name, email, password) => async (dispatch) =>{
     }
 };
 
-export const verifyEmail = (token) => async (dispatch) =>{
-    dispatch(setLoading(true));
-    try {
-        const config = {headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'}};
-
-        await axios.get(`/api/users/verify-email`, config)
-        dispatch(verificationEmail())
-        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-        userInfo.active = true;
-        localStorage.setItem('userInfo', JSON.stringify(userInfo))
-    } catch (error) {
-        dispatch(
-            setError(
-              error.response && error.response.data.message
-                ? error.response.data.message
-                : error.message
-                ? error.message
-                : "An unexpected error occured please try again later."
-            )
-          );
-    }
-}
+export const verifyEmail = (token) => async (dispatch) => {
+};
 
 export const sendResendEmail = (email) => async (dispatch) =>{
     dispatch(setLoading(true));
@@ -133,23 +113,23 @@ export const resetState = () => async (dispatch) =>{
     dispatch(stateReset());
 }
 
-export const googleLogin = (googleId, email, name, googleImage) => async (dispatch) =>{
-    dispatch(setLoading(true));
-    try {
-        const config = {headers: {'Content-Type': 'application/json'}};
-        const {data} = await axios.post('/api/users/google-login', {googleId, email, name, googleImage}, config);
-        dispatch(userLogin(data));
-        localStorage.setItem('userInfo', JSON.stringify(data));
-    } catch (error) {
-        dispatch(
-            setError(
-              error.response && error.response.data.message
-                ? error.response.data.message
-                : error.message
-                ? error.message
-                : "An unexpected error occured please try again later."
-            )
-          );
- 
-    }
-}
+export const googleLogin = (googleId, email, name, googleImage) => async (dispatch) => {
+	dispatch(setLoading(true));
+	try {
+		const config = { headers: { 'Content-Type': 'application/json' } };
+
+		const { data } = await axios.post('/api/users/google-login', { googleId, email, name, googleImage }, config);
+		dispatch(userLogin(data));
+		localStorage.setItem('userInfo', JSON.stringify(data));
+	} catch (error) {
+		dispatch(
+			setError(
+				error.response && error.response.data.message
+					? error.response.data.message
+					: error.message
+					? error.message
+					: 'An expected error has occured. Please try again later.'
+			)
+		);
+	}
+};
